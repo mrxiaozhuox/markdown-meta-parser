@@ -1,14 +1,11 @@
 #[derive(Debug, PartialEq, Clone)]
 pub enum MarkItem {
-    Text(String),
-
     Paragraph(Vec<MarkInline>),
 
     Title((u8, String)),
 
     Code(M_Code),
     Quote(Vec<MarkInline>),
-    Link(M_Link),
     Image(M_Image),
 
     UnorderedList(Vec<Vec<MarkInline>>),
@@ -47,7 +44,10 @@ pub struct M_Image {
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum MarkInline {
+    Text(String),
     Italic(String),
-    Strong(String),
+    Bold(String),
     Strikethrough(String),
+    Link(M_Link),
+    InlineCode(String),
 }
