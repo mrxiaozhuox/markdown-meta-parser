@@ -40,7 +40,7 @@ impl InlineParser {
             MarkInline::Text(String::new()),
         );
 
-        let mut r = take_till(|c| c == '*' || c == '_' || c == '~' || c == '`')(md)?;
+        let r = take_till(|c| c == '*' || c == '_' || c == '~' || c == '`')(md)?;
 
         let mut sign = (&r.0[0..1], 1);
         if sign.0 == "~" {
@@ -52,8 +52,31 @@ impl InlineParser {
 
         result.0 = MarkInline::Text(r.1.to_string());
 
-        println!("{:?}", r.0);
-        let r = take_till(|c| c == '*' || c == '_' || c == '~' || c == '`')(r.0)?;
+        let mut r = take_till(|c| c == '*' || c == '_' || c == '~' || c == '`')(r.0)?;
+        let mut tag_str = String::new();
+        for i in 0..sign.1 {
+            tag_str.push_str(sign.0);
+        }
+        r.0 = tag(tag_str.as_str())(r.0)?.0;
+
+        result.1 = match sign.0 {
+            "*" | "_" => {
+                if sign.1 == 1 {
+                    MarkInline::Italic(r.1.to_string())
+                } else {
+                    MarkInline::Bold(r.1.to_string())
+                }
+            },
+            "~" => {
+                MarkInline::Strikethrough(r.1.to_string())
+            },
+            "`" => {
+                MarkInline::InlineCode(r.1.to_string())
+            },
+            _ => {
+                MarkInline::Text(r.1.to_string())
+            }
+        };
 
         Ok((r.0, result))
     }
@@ -72,7 +95,7 @@ mod tests {
 
     #[test]
     fn test_code() {
-        let r = InlineParser::italic_and_bold("hello **Dioxus**");
+        let r = InlineParser::italic_and_bold("hello * Dioxus `0.2` Framework!");
         println!("{:?}", r);
     }
 }
