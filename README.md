@@ -1,22 +1,19 @@
-# md2json
+# Markdown Meta Parser
 
-Parse Markdown to Json
+Parse Markdown Metadata
 
 
 ```markdown
-# hello world
-> 123456
+---
+title: Hello World,
+author: YuKun Liu
+---
 ```
 
 ```json
-[
-    {
-        "label": "h1",
-        "text": "hello world",
-    },
-    {
-        "label": "quote",
-        "text": "123456"
-    }
-]
+{
+    "title": "Hello World",
+    "author": "YuKun Liu",
+    "content": "..."
+}
 ```
