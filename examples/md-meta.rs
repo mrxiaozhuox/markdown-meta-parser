@@ -1,6 +1,4 @@
-use std::{collections::HashMap, fs::File, io::Read};
-
-use markdown_meta_parser::MetaData;
+use std::collections::HashMap;
 
 fn main() {
     let content = include_str!("./test.md").to_string();
