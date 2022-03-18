@@ -5,8 +5,9 @@ Parse Markdown Metadata
 
 ```markdown
 ---
-title: Hello World,
+title: Hello World
 author: YuKun Liu
+tags: [blog, test]
 ---
 ```
 
@@ -14,6 +15,7 @@ author: YuKun Liu
 {
     "title": "Hello World",
     "author": "YuKun Liu",
+    "tags": "[blog, test]",
     "content": "..."
 }
 ```
