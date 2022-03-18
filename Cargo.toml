@@ -2,10 +2,12 @@
 name = "markdown-meta-parser"
 version = "0.1.0"
 edition = "2021"
+authors = ["YuKun Liu <mrxzx.info@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/mrxiaozhuox/markdown-meta-parser/"
+description = "parse markdown metadata"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 anyhow = "1.0"
-# serde = { version = "1.0", features = ["derive"] }
-# serde_json = "1.0"
