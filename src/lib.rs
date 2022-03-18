@@ -34,7 +34,9 @@ impl MetaData {
         for line in content.lines() {
             if line.trim() == "---" {
                 state += 1;
-                continue;
+                if state < 3 {
+                    continue;
+                }
             } else if state == 0 {
                 state = 2;
             }

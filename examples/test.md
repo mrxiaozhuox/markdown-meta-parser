@@ -8,3 +8,11 @@ released: false
 # This is my first post!
 
 Hello World!!
+
+---
+
+```json
+{
+    "hello": "Hello World"
+}
+```
