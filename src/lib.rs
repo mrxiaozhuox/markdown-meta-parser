@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub struct MetaData {
-    content: String,
+    pub content: String,
     pub required: Vec<String>,
     pub type_mark: HashMap<String, &'static str>,
 }
@@ -24,23 +24,26 @@ impl MetaData {
         }
     }
 
-    pub fn parse(&self) -> anyhow::Result<HashMap<String, Value>> {
+    pub fn parse(&self) -> anyhow::Result<(HashMap<String, Value>, String)> {
         let content = self.content.clone();
+        let mut markdown_text = String::new();
         let mut result = HashMap::new();
 
-        let mut started = false;
+        let mut state = 0;
 
         for line in content.lines() {
-            // if line is empty, just skip
-            if line.trim().is_empty() {
-                continue;
-            }
-
             if line.trim() == "---" {
-                started = !started;
+                state += 1;
+                continue;
+            } else if state == 0 {
+                state = 2;
             }
 
-            if started {
+            if state == 1 {
+                if line.trim().is_empty() {
+                    continue;
+                }
+
                 let res = Self::parse_line(line);
                 if let Some((key, value)) = res {
                     if self.type_mark.contains_key(&key) {
@@ -82,6 +85,8 @@ impl MetaData {
                         result.insert(key, Value::String(value));
                     }
                 }
+            } else {
+                markdown_text += &format!("{line}\n");
             }
         }
 
@@ -91,7 +96,7 @@ impl MetaData {
             }
         }
 
-        Ok(result)
+        Ok((result, markdown_text))
     }
 
     pub fn parse_line(text: &str) -> Option<(String, String)> {
