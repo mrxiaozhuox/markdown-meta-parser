@@ -4,7 +4,7 @@ use std::collections::HashMap;
 pub struct MetaData {
     content: String,
     pub required: Vec<String>,
-    pub type_mark: HashMap<String, String>,
+    pub type_mark: HashMap<String, &'static str>,
 }
 
 #[derive(Debug, Clone)]
@@ -42,7 +42,46 @@ impl MetaData {
 
             if started {
                 let res = Self::parse_line(line);
-                println!("{:?}", res);
+                if let Some((key, value)) = res {
+                    if self.type_mark.contains_key(&key) {
+                        let target_type = self.type_mark.get(&key).unwrap();
+                        let value = match target_type.to_lowercase().as_str() {
+                            "bool" => {
+                                if &value.to_lowercase() == "true" {
+                                    Value::Bool(true)
+                                } else if &value.to_lowercase() == "false" {
+                                    Value::Bool(false)
+                                } else {
+                                    Value::String(value)
+                                }
+                            }
+                            "number" => {
+                                if let Ok(v) = value.parse::<f64>() {
+                                    Value::Number(v)
+                                } else {
+                                    Value::String(value)
+                                }
+                            }
+                            "array" => {
+                                if &value[0..1] == "[" && &value[value.len() - 1..] == "]" {
+                                    let mut array = vec![];
+                                    let temp = value[1..value.len() - 1].to_string();
+                                    let v = temp.split(',').collect::<Vec<&str>>();
+                                    for i in v {
+                                        array.push(i.trim().to_string());
+                                    }
+                                    Value::Array(array)
+                                } else {
+                                    Value::String(value)
+                                }
+                            }
+                            _ => Value::String(value),
+                        };
+                        result.insert(key, value);
+                    } else {
+                        result.insert(key, Value::String(value));
+                    }
+                }
             }
         }
 
@@ -72,33 +111,10 @@ impl MetaData {
 
 #[cfg(test)]
 mod test {
-    use std::collections::HashMap;
-
     use crate::MetaData;
-
     #[test]
     fn one_line() {
         let r = MetaData::parse_line("title: Hello World");
         println!("{:?}", r);
-    }
-
-    #[test]
-    fn test_md() {
-        const md: &str = "
----
-title: Hello World
-author: YuKun Liu
-tags: [test]
-date: 2003-11-10
----
-        ";
-
-        let meta = MetaData {
-            content: md.to_string(),
-            required: vec![],
-            type_mark: HashMap::default(),
-        };
-
-        let r = meta.parse();
     }
 }
