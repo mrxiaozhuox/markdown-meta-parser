@@ -35,7 +35,7 @@ let meta = MetaData {
 println!("{:#?}", meta.parse().unwrap());
 ```
 
-```json
+```text
 (
     {
         "author": String(
