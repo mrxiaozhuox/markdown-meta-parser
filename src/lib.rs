@@ -116,6 +116,37 @@ impl MetaData {
     }
 }
 
+impl Value {
+    pub fn as_string(self) -> Option<String> {
+        if let Value::String(s) = self {
+            return Some(s);
+        }
+        None
+    }
+    
+    pub fn as_bool(self) -> Option<bool> {
+        if let Value::Bool(b) = self {
+            return Some(b);
+        }
+        None
+    }
+
+    pub fn as_number(self) -> Option<f64> {
+        if let Value::Number(n) = self {
+            return Some(n);
+        }
+        None
+    }
+
+    pub fn as_array(self) -> Option<Vec<String>> {
+        if let Value::Array(a) = self {
+            return Some(a);
+        }
+        None
+    }
+
+}
+
 #[cfg(test)]
 mod test {
     use crate::MetaData;
