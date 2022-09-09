@@ -73,7 +73,10 @@ impl MetaData {
                                     let temp = value[1..value.len() - 1].to_string();
                                     let v = temp.split(',').collect::<Vec<&str>>();
                                     for i in v {
-                                        array.push(i.trim().to_string());
+                                        let val = i.trim().to_string();
+                                        if !val.is_empty() {
+                                            array.push(val);
+                                        }
                                     }
                                     Value::Array(array)
                                 } else {
